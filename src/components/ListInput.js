@@ -18,7 +18,7 @@ export default function ListInput ({ addList }) {
         <input
           onChange={(e) => setListname(e.target.value)}
           value={listname}
-          className='px-px w-full text-black border-2 border-transparent rounded-sm focus:border-sky-600 focus:outline-none focus:rounded-sm'
+          className='px-px w-full text-black border-2 border-sky-600 rounded-sm focus:border-sky-600 focus:outline-none focus:rounded-sm'
           placeholder='Enter list title...'
           autoFocus
           onKeyUp={(e) => {
