@@ -4,12 +4,12 @@
 
 
 
-.button {
+.cross {
   display: inline;
   color: #555555;
 }
 
-.button:hover {
+.cross:hover {
   color: black;
 }
 
