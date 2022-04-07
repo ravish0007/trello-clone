@@ -14,13 +14,9 @@ export default function Board () {
     setList((lists) => [...lists, list])
   }
 
-  function removeList (id) {
-    setList((lists) => lists.filter(list => list.id !== id))
-  }
-
   return (
     <div className='flex overflow-x-auto space-x-4 '>
-      {lists.map(list => <List list={list} key={list.id} removeList={removeList} />)}
+      {lists.map(list => <List list={list} setList={setList} key={list.id} />)}
       <ListInput addList={addList} />
     </div>
   )
