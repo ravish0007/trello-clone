@@ -6,7 +6,7 @@ import Card from './Card'
 import CardInput from './CardInput'
 import ListPopover from './popovers/ListPopover'
 
-export default function List ({ list }) {
+export default function List ({ list, removeList }) {
   const [cards, setCard] = useState([])
   const [popoverVisibility, setPopoverVisibility] = useState(false)
   const [isEdit, setEdit] = useState(false)
@@ -25,6 +25,11 @@ export default function List ({ list }) {
                 setEdit(true)
                 setPopoverVisibility(false)
               }}
+              archiveList={() => {
+                console.log(list.id)
+                removeList(list.id)
+              }}
+
             />
           : ''}
 
@@ -32,7 +37,7 @@ export default function List ({ list }) {
 
       <div draggable className='w-72 h-fit space-y-3 bg-gray-200 shrink-0 rounded-md p-2'>
         <div className='flex flex-row justify-around'>
-          <p className='basis-3/4 font-[550] font-sans p-2 inline'> {list} </p>
+          <p className='basis-3/4 font-[550] font-sans p-2 inline'> {list.name} </p>
           <span
             className='p-2 h-fit rounded text-gray-600 hover:text-black hover:bg-gray-300'
             onClick={() => setPopoverVisibility(popoverVisibility => !popoverVisibility)}
