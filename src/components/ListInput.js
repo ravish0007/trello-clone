@@ -35,7 +35,7 @@ export default function ListInput ({ addList }) {
           </button>
 
           <VscChromeClose
-            className='button'
+            className='cross'
             size='1.6rem'
             onClick={() => setEdit(false)}
           />
