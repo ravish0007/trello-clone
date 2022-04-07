@@ -10,7 +10,16 @@
 }
 
 .button:hover {
-  display: inline;
   color: black;
 }
+
+.list-three-dots {
+  display: inline;
+  color: #555555;
+}
+
+.list-three-dots:hover {
+  color: black;
+}
+
 
