@@ -2,8 +2,8 @@
 import { useState, useEffect } from 'react'
 import { VscChromeClose } from 'react-icons/vsc'
 
-export default function ListInput ({ addCard }) {
-  const [isEdit, setEdit] = useState(false)
+export default function ListInput ({ addCard, isEdit, setEdit }) {
+  // const [isEdit, setEdit] = useState(false)
   const [cardName, setCardName] = useState('')
 
   function handleAddCard () {
@@ -38,7 +38,7 @@ export default function ListInput ({ addCard }) {
           </button>
 
           <VscChromeClose
-            className='button'
+            className='cross'
             size='1.6rem'
             onClick={() => setEdit(false)}
           />
