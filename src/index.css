@@ -3,3 +3,14 @@
 @tailwind utilities;
 
 
+
+.button {
+  display: inline;
+  color: #555555;
+}
+
+.button:hover {
+  display: inline;
+  color: black;
+}
+
