@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { VscChromeClose } from 'react-icons/vsc'
 
 export default function ListInput ({ addList }) {
