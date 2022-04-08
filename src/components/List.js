@@ -57,7 +57,7 @@ export default function List ({ list, setList }) {
         </div>
 
         <div className='space-y-3 rounded-md'>
-          {cards.map(card => <Card card={card} />)}
+          {cards.map(card => <Card card={card} listname={list.name} />)}
         </div>
 
         <CardInput
