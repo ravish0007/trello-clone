@@ -11,7 +11,6 @@ export default function ListHeader ({ name, changeListName }) {
       <input
         onChange={(e) => setListName(e.target.value)}
         value={listname}
-        // className='p-2 w-full text-black border-2 border-transparent rounded-sm focus:border-sky-600 focus:outline-none focus:rounded-sm'
         className='basis-3/4 p-2 font-[550] w-full text-black rounded-sm border-2 border-transparent focus:border-sky-600 focus:outline-none focus:rounded-sm'
         autoFocus
         onFocus={(e) => e.target.select()}
