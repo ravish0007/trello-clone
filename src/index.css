@@ -23,3 +23,22 @@
 }
 
 
+
+.card .pencil-wrapper{
+    visibility: hidden;
+}
+
+
+.card:hover .pencil-wrapper{
+    visibility: visible;
+}
+
+.pencil-wrapper {
+  visibility: hidden;
+}
+
+.card-pencil {
+  display: inline; 
+  color: #555555;
+}
+
