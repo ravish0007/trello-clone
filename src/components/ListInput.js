@@ -46,11 +46,11 @@ export default function ListInput ({ addList }) {
   }
 
   return (
-    <button
+    <div
       className='shrink-0 w-72 h-fit text-gray-50 bg-sky-800/50 p-2 font-normal rounded hover:bg-sky-800'
       onClick={() => setEdit(true)}
     >
       <p>+ Add another list</p>
-    </button>
+    </div>
   )
 }

@@ -47,11 +47,11 @@ export default function CardInput ({ addCard, isEdit, setEdit }) {
   }
 
   return (
-    <button
+    <div
       className='w-full h-fit text-slate-600 bg-transparent p-2 font-normal rounded hover:bg-gray-300'
       onClick={() => setEdit(true)}
     >
       <p>+ Add a card</p>
-    </button>
+    </div>
   )
 }
