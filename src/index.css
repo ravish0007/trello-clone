@@ -22,12 +22,9 @@
   color: black;
 }
 
-
-
 .card .pencil-wrapper{
     visibility: hidden;
 }
-
 
 .card:hover .pencil-wrapper{
     visibility: visible;
@@ -42,3 +39,11 @@
   color: #555555;
 }
 
+.card-modal-menu-item {
+  display: inline; 
+  @apply text-slate-300
+}
+
+.card-modal-menu-item:hover {
+  @apply text-slate-200
+}
