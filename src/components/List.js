@@ -8,12 +8,17 @@ import Card from './Card'
 import CardInput from './CardInput'
 
 export default function List ({ list, setList }) {
-  const [cards, setCard] = useState([])
+  const [cards, setCards] = useState([])
   const [popoverVisibility, setPopoverVisibility] = useState(false)
   const [isEdit, setEdit] = useState(false)
 
-  function addCard (cardname) {
-    setCard((cards) => [...cards, cardname])
+  function addCard (cardName) {
+    const card = {
+      id: Date.now(),
+      name: cardName,
+      description: ''
+    }
+    setCards((cards) => [...cards, card])
   }
 
   function removeList () {
@@ -23,6 +28,15 @@ export default function List ({ list, setList }) {
   function updateListName (name) {
     setList((lists) => lists.map(xlist => xlist.id === list.id ? { ...list, name } : xlist
     ))
+  }
+
+  function updateCard (id, name) {
+    setCards((cards) => cards.map(card => card.id === id ? { ...card, name } : card
+    ))
+  }
+
+  function removeCard (id) {
+    setCards((cards) => cards.filter(card => card.id !== id))
   }
 
   return (
@@ -42,7 +56,7 @@ export default function List ({ list, setList }) {
 
       </div>
 
-      <div draggable className='w-72 h-fit space-y-3 bg-gray-200 shrink-0 rounded-md p-2'>
+      <div className='w-72 h-fit space-y-3 bg-gray-200 shrink-0 rounded-md p-2'>
         <div className='flex flex-row justify-around'>
           <ListHeader
             name={list.name}
@@ -57,7 +71,8 @@ export default function List ({ list, setList }) {
         </div>
 
         <div className='space-y-3 rounded-md'>
-          {cards.map(card => <Card card={card} listname={list.name} />)}
+          {cards.map(card => <Card card={card} updateCard={updateCard} removeCard={removeCard} listname={list.name} key={list.id} />)}
+          {/* {cards.map(card => <Card {...{ card, updateCard, listname: list.name }} key={list.id} />)} */}
         </div>
 
         <CardInput
