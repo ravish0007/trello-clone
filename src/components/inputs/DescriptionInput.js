@@ -1,35 +1,39 @@
 import { useState } from 'react'
 import { VscChromeClose } from 'react-icons/vsc'
 
-export default function DescriptionInput ({ description, addDescription }) {
+export default function DescriptionInput (props) {
   const [isEdit, setEdit] = useState(false)
-  // const [description, setDescription] = useState('')
+  const [description, setDescription] = useState(props.description)
 
-  function handleAddList () {
-    addDescription(description)
+  function handleAddDescription () {
+    props.addDescription(description)
+    setEdit(false)
+  }
+
+  function resetDescription () {
+    setDescription(props.description)
     setEdit(false)
   }
 
   if (isEdit) {
     return (
 
-      // {/* <div className='w-full h shrink-0 space-y-1 h-fit p-2 font-normal rounded'> */}
       <div className='space-y-2'>
         <textarea
-          onChange={(e) => addDescription(e.target.value)}
+          onChange={(e) => setDescription(e.target.value)}
           value={description}
           className='p-2 w-full h-20 text-black border-2 rounded border-sky-600 rounded-sm focus:border-sky-600 focus:outline-none focus:rounded'
           placeholder='Add a more detailed description...'
           autoFocus
           onKeyUp={(e) => {
-            if (e.keyCode === 13) handleAddList()
+            if (e.key === 'Enter') handleAddDescription()
           }}
         />
 
         <div className='space-x-2'>
           <button
             className='py-2 px-4 text-gray-50 rounded bg-sky-600 hover:bg-sky-700'
-            onClick={handleAddList}
+            onClick={resetDescription}
           >
             Save
           </button>
@@ -37,7 +41,7 @@ export default function DescriptionInput ({ description, addDescription }) {
           <VscChromeClose
             className='cross'
             size='1.6rem'
-            onClick={() => setEdit(false)}
+            onClick={() => { setEdit(false); setDescription(props.description) }}
           />
         </div>
 
