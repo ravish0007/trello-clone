@@ -25,7 +25,7 @@ export default function ListPopover ({ closeMenu, enableCardEditing, archiveList
           handleClick={enableCardEditing}
         />
         <ListMenuItem
-          name='Archive this list'
+          name='Delete this list'
           handleClick={archiveList}
         />
       </div>
