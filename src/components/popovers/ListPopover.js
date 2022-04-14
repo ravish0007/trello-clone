@@ -2,7 +2,7 @@ import { VscChromeClose } from 'react-icons/vsc'
 
 import ListMenuItem from './ListMenuItem'
 
-export default function ListPopover ({ closeMenu, enableCardEditing, archiveList }) {
+export default function ListPopover ({ closeMenu, enableCardEditing, removeList }) {
   return (
     <div className='z-10 rounded bg-white border border-slate-300 w-64 h-fit absolute inset-x-60 inset-y-14 '>
       <div className='p-2 divide-y'>
@@ -26,7 +26,7 @@ export default function ListPopover ({ closeMenu, enableCardEditing, archiveList
         />
         <ListMenuItem
           name='Delete this list'
-          handleClick={archiveList}
+          handleClick={removeList}
         />
       </div>
 
