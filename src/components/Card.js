@@ -5,8 +5,8 @@ import { BiPencil } from 'react-icons/bi'
 import CardPrimaryModal from './modals/CardPrimaryModal'
 import CardSecondaryModal from './modals/CardSecondaryModal'
 
-export default function Card ({ card, listname, updateCard, removeCard, updateDescription }) {
-  const [description, setDescription] = useState('') // description not into card model
+export default function Card ({ card, innerRef, provided, listname, updateCard, removeCard, updateDescription }) {
+  // const [description, setDescription] = useState(card.description) // description not into card model
 
   const [primaryModalVisibility, setPrimaryModalVisibility] = useState(false)
   const [secondaryModalVisibility, setSecondaryModalVisibility] = useState(false)
@@ -19,6 +19,9 @@ export default function Card ({ card, listname, updateCard, removeCard, updateDe
   return (
 
     <div
+      ref={innerRef}
+      {...provided.draggableProps}
+      {...provided.dragHandleProps}
       className='card relative cursor-pointer font-normal border-b-[1px] border-slate-400 bg-white shadow rounded hover:bg-gray-100'
       onClick={(e) => { e.stopPropagation(); setPrimaryModalVisibility(true) }}
     >
@@ -38,8 +41,8 @@ export default function Card ({ card, listname, updateCard, removeCard, updateDe
         open={primaryModalVisibility}
         listname={listname}
         card={card}
-        updateDescription={setDescription}
-        description={description}
+        updateDescription={(description) => updateDescription(card.id, description)}
+        description={card.description}
         updateCard={updateCard}
         onClose={() => setPrimaryModalVisibility(false)}
       />
