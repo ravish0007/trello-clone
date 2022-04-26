@@ -1,29 +1,47 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-import { DragDropContext, Droppable } from 'react-beautiful-dnd'
+import { DragDropContext } from 'react-beautiful-dnd'
 
 import List from './List'
 import ListInput from './ListInput'
 
-export default function Board () {
+import TrelloService from '../trelloService'
+
+export default function Board ({ board }) {
   const [lists, setList] = useState([])
+
+  useEffect(() => {
+    async function fetchData () {
+      const result = await TrelloService.getLists(board.board_id)
+
+      setList(result.data.lists.map(x => {
+        return { id: x.list_id.toString(), name: x.name, cards: x.cards }
+      }))
+    }
+    fetchData()
+  }, [])
 
   function addList (listname) {
     const list = {
-      name: listname,
-      id: String(Date.now()),
-      cards: []
+      name: listname
     }
-
-    setList((lists) => [...lists, list])
+    TrelloService.newList({ boardID: board.board_id, ...list }).then((id) => {
+      setList((lists) => [...lists, { cards: [], ...list, id: id.toString() }])
+    })
   }
 
   function handleDragEnd (result) {
-    console.log(result)
-
     const { source, destination } = result
 
+    console.log(result)
     if (!destination) return
+
+    const sourceCard_ = lists.filter(list => list.id === source.droppableId)[0].cards[source.index]
+    const destinationCard = lists.filter(list => list.id === destination.droppableId)[0].cards[destination.index]
+
+    // TrelloService.moveCard(source.droppableId, destination.droppableId, sourceCard_.id, destinationCard?.id, source.index, destination.index).then(() => {})
+
+    if (sourceCard_.id === destinationCard?.id) return
 
     const [sourceCard] = lists.filter(list => list.id === source.droppableId)[0].cards.splice(source.index, 1)
 
@@ -35,7 +53,6 @@ export default function Board () {
     })
 
     const destinationCards = Array.from(lists.filter(list => list.id === destination.droppableId)[0].cards)
-
     destinationCards.splice(destination.index, 0, sourceCard)
 
     setList(lists => {
@@ -44,11 +61,13 @@ export default function Board () {
         : { ...list, cards: destinationCards }
       )
     })
+
+    // })
   }
 
   return (
     <div
-      className='flex overflow-x-auto space-x-4'
+      className='p-6 flex overflow-x-auto space-x-4'
     >
       <DragDropContext onDragEnd={handleDragEnd}>
         {lists.map((list, index) =>
