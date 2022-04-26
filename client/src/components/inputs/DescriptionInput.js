@@ -6,7 +6,7 @@ export default function DescriptionInput (props) {
   const [description, setDescription] = useState(props.description)
 
   function handleAddDescription () {
-    props.addDescription(description)
+    props.addDescription(description.trim())
     setEdit(false)
   }
 
@@ -17,7 +17,6 @@ export default function DescriptionInput (props) {
 
   if (isEdit) {
     return (
-
       <div className='space-y-2'>
         <textarea
           onChange={(e) => setDescription(e.target.value)}
