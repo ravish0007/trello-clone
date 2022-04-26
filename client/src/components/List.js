@@ -8,75 +8,74 @@ import ListPopover from './popovers/ListPopover'
 import Card from './Card'
 import CardInput from './CardInput'
 
-// export default function List ({ list, innerRef, provided, setList }) {
+import TodoService from '../trelloService'
+import TrelloService from '../trelloService'
+
 export default function List ({ list, setList }) {
   const [popoverVisibility, setPopoverVisibility] = useState(false)
   const [isEdit, setEdit] = useState(false)
 
   function addCard (cardName) {
     const card = {
-      id: String(Date.now()),
-      name: cardName,
+      name: cardName.trim(),
       description: ''
     }
 
-    setList((lists) => lists.map(list_ => list_.id !== list.id
-      ? list_
-      : { ...list, cards: [...list.cards, card] }
-    ))
+    TodoService.newCard(list.id, card).then(id =>
+      setList((lists) => lists.map(list_ => list_.id !== list.id
+        ? list_
+        : { ...list, cards: [...list.cards, { ...card, id: id.toString() }] }
+      )))
   }
 
-  function updateCard (cardId, name) {
-    setList((lists) => lists.map(list_ => list_.id !== list.id
-      ? list_
-      : {
-          ...list,
-          cards: list.cards.map(card => card.id !== cardId
-            ? card
-            : { ...card, name })
-        })
-    )
+  function updateCard (cardID, name) {
+    TrelloService.updateCard({ id: cardID, name }).then(() =>
+
+      setList((lists) => lists.map(list_ => list_.id !== list.id
+        ? list_
+        : {
+            ...list,
+            cards: list.cards.map(card => card.id !== cardID
+              ? card
+              : { ...card, name })
+          })
+      ))
   }
 
-  function removeCard (cardId) {
-    setList((lists) => lists.map(list_ => list_.id !== list.id
-      ? list_
-      : {
-          ...list,
-          cards: list.cards.filter(card => card.id !== cardId)
-        })
-    )
+  function removeCard (cardID) {
+    TodoService.deleteCard(cardID).then(() =>
+      setList((lists) => lists.map(list_ => list_.id !== list.id
+        ? list_
+        : {
+            ...list,
+            cards: list.cards.filter(card => card.id !== cardID)
+          })
+      ))
   }
 
-  function updateDescription (cardId, description) {
-    setList((lists) => lists.map(list_ => list_.id !== list.id
-      ? list_
-      : {
-          ...list,
-          cards: list.cards.map(card => card.id !== cardId
-            ? card
-            : { ...card, description })
-        })
-    )
+  function updateDescription (cardID, description) {
+    TrelloService.updateCard({ id: cardID, description }).then(() =>
+
+      setList((lists) => lists.map(list_ => list_.id !== list.id
+        ? list_
+        : {
+            ...list,
+            cards: list.cards.map(card => card.id !== cardID
+              ? card
+              : { ...card, description })
+          })
+      ))
   }
 
   function removeList () {
-    setList((lists) => lists.filter(list_ => list_.id !== list.id))
+    TodoService.deleteList(list.id).then(() =>
+      setList((lists) => lists.filter(list_ => list_.id !== list.id)))
   }
 
   function updateListName (name) {
-    setList((lists) => lists.map(list_ => list_.id === list.id ? { ...list, name } : list_))
+    TodoService.updateList({ id: list.id, name }).then(() =>
+      setList((lists) => lists.map(list_ => list_.id === list.id ? { ...list, name } : list_)))
   }
-
-  // function handleDragEnd (result) {
-  //   if (!result.destination) return
-
-  //   const cardsArray = Array.from(cards)
-  //   const [reorderedCard] = cardsArray.splice(result.source.index, 1)
-  //   cardsArray.splice(result.destination.index, 0, reorderedCard)
-
-  //   setCards(cardsArray)
-  // }
 
   return (
     <div className='relative min-h-screen'>
@@ -95,9 +94,6 @@ export default function List ({ list, setList }) {
 
       <div
         className='w-72 h-fit space-y-3 bg-gray-200 shrink-0 rounded-md p-2'
-        // ref={innerRef}
-        // {...provided.droppableProps}
-        // {...provided.dragHandleProps}
       >
         <div className='flex flex-row justify-around'>
           <ListHeader
