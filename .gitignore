@@ -24,3 +24,6 @@ client/yarn-error.log*
 
 server/.env
 server/node_modules
+
+
+experimental_dir/
