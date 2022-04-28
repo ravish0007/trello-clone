@@ -1,7 +1,6 @@
 const db = require('../models')
 
 async function fetchAllLists (request, response) {
-
   if (!request.params.id) {
     response.status(400).json({ error: 'boardID missing' })
   }
@@ -10,7 +9,7 @@ async function fetchAllLists (request, response) {
 
   for (let i = 0; i < result.length; i++) {
     const [error, cards] = await db.fetchAllCards(result[i].list_id)
-    result[i].cards = cards.map(x => { return { ...x, id: x.id.toString() } })
+    result[i].cards = cards.map(x => { return { ...x, id: x.id.toString(), description: x.description ? x.description : '' } })
   }
 
   if (error) {
