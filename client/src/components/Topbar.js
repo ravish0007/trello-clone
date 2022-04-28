@@ -15,7 +15,7 @@ export default function Topbar ({ username, logOut }) {
       />
 
       <div className='flex justify-between'>
-        <span className='text-white text-2xl'> Trello </span>
+        <span className='text-white text-2xl italic'> Trello </span>
         <span
           className='cursor-pointer h-10 w-10 p-2 rounded-full text-red-900 bg-gray-200 text-center text-lg'
           onClick={() => setShowMenu(true)}
