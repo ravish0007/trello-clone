@@ -21,12 +21,6 @@ async function insertUser (user) {
 async function getPassword (username) {
   try {
     const user = await pool.query('SELECT * FROM users where username = $1', [username])
-
-    // if (user.rows) {
-    //   const result = await pool.query('SELECT board_id FROM boards where user_id = $1', [user.rows[0].user_id])
-    //   return [null, result.rows]
-    // }
-
     return [null, user.rows]
   } catch (error) {
     return [error, null]
