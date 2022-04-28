@@ -1,46 +1,60 @@
 const express = require('express')
 const cors = require('cors')
 
+const morgan = require('morgan')
+
 const router = require('./routes')
-const config = require('./config')
+
+const cookieSession = require('cookie-session')
+
+const verifyToken = require('./verifyToken')
 
 const app = express()
 
-app.use(cors())
-app.use(express.json())
-// app.use(express.static('public'))
+app.use(morgan('combined'))
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
 
-app.use('/api/lists', router.trelloListRoute)
-app.use('/api/cards', router.trelloCardRoute)
-app.use('/api/users', router.userRoute)
+// app.use(cors(
+//   {
+//     origin: 'http://localhost:3000',
+//     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+//   }
+// ))
 
-const PORT = process.env.SERVER_PORT || 3001
-app.listen(PORT, () => { console.log(`Server running.. on ${PORT}`) })
-
-// const todoModel = require('./models')
-// console.log(todoModel.fetchAllLists().then(x => console.log(x)))
-// todoModel.insertList({ boardID: 2, name: 'again' }).then((x) => console.log(x))
-// todoModel.updateList({ id: 4, name: 'hello again' }).then((x) => console.log(x))
-// todoModel.deleteList(4).then((x) => console.log(x))
-
-// console.log(todoModel.fetchAllCards(4).then(x => console.log(x)))
-// todoModel.insertCard({ listID: 4, name: 'ad' }).then((x) => console.log(x))
-// todoModel.insertCard({ listID: 4, name: 'sadsds stuff' }).then((x) => console.log(x))
-// todoModel.updateCard({ id: 17, name: 'hello again' }).then((x) => console.log(x))
-// todoModel.deleteCard(1).then((x) => console.log(x))
-
-// const bcrypt = require('bcrypt')
-// bcrypt.hash('hello', 10).then((hash, error) => todoModel.insertUser({ name: 'nfs@gmail.com', passwordHash: hash }).then((x) => console.log(x)))
-
-// todoModel.getPassword('ravish.nfs@gmail.com').then(x => {
-//   console.log(x)
-//   bcrypt.compare('helloo', x[1][0].password).then(x => console.log(x))
+// app.use(function (req, res, next) {
+//   res.header('Content-Type', 'application/json;charset=UTF-8')
+//   res.header('Access-Control-Allow-Credentials', true)
+//   res.header(
+//     'Access-Control-Allow-Headers',
+//     'Origin, X-Requested-With, Content-Type, Accept'
+//   )
+//   next()
 // })
 
-// const match = await bcrypt.compare(pwd, foundUser.password);
-//     if (match) {
-//         // create JWTs
-//         res.json({ 'success': `User ${user} is logged in!` });
-//     } else {
-//         res.sendStatus(401);
-//     }
+app.use(express.json())
+// app.use(express.static('public'))
+app.use(cookieSession({ secret: process.env.SESSION_SECRET, httpOnly: true }))
+
+app.use('/api/lists', verifyToken, router.trelloListRoute)
+app.use('/api/cards', verifyToken, router.trelloCardRoute)
+app.use('/api/auth', router.authRoute)
+
+const PORT = process.env.SERVER_PORT || 3001
+
+// const https = require('https')
+// const fs = require('fs')
+// https
+//   .createServer(
+//     {
+//       key: fs.readFileSync('server.key'),
+//       cert: fs.readFileSync('server.cert')
+//     },
+//     app
+//   )
+//   .listen(PORT, function () {
+//     console.log(
+//       'Example app listening on port 3000! Go to https://localhost:3000/'
+//     )
+//   })
+
+app.listen(PORT, () => { console.log(`Server running.. on ${PORT}`) })

@@ -1,6 +1,7 @@
 const db = require('../models')
 
 async function fetchAllLists (request, response) {
+
   if (!request.params.id) {
     response.status(400).json({ error: 'boardID missing' })
   }

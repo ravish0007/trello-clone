@@ -1,5 +1,5 @@
 const trelloListRoute = require('./trelloListRoute')
 const trelloCardRoute = require('./trelloCardRoute')
-const userRoute = require('./userRoute')
+const authRoute = require('./authRoute')
 
-module.exports = { trelloListRoute, trelloCardRoute, userRoute }
+module.exports = { trelloListRoute, trelloCardRoute, authRoute }

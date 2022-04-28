@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 
 import trelloService from '../trelloService'
+import { setJwtToken } from '../tokenManager'
 
 export default function Login ({ setStatus, setBoard, setUser }) {
   const [username, setUsername] = useState('')
@@ -33,7 +34,12 @@ export default function Login ({ setStatus, setBoard, setUser }) {
       const result = await trelloService.verifyUser({ username, password })
       if (result) {
         setUser(username)
-        setBoard(result.data[0])
+
+        // setting token in session storage
+        setJwtToken(result.data.token)
+        delete result.data.token
+
+        setBoard(result.data)
         setStatus(true)
       } else {
         setError('Authentication failed')

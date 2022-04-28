@@ -12,7 +12,7 @@ export default function Board ({ board }) {
 
   useEffect(() => {
     async function fetchData () {
-      const result = await TrelloService.getLists(board.board_id)
+      const result = await TrelloService.getLists(board.boardID)
 
       setList(result.data.lists.map(x => {
         return { id: x.list_id.toString(), name: x.name, cards: x.cards }

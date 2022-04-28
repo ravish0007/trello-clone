@@ -1,21 +1,33 @@
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import Workspace from './components/Workspace.js'
 import Login from './components/Login'
-// import Register from './components/Register'
 
-import trelloService from './trelloService'
+import { removeJwtToken, getJwtToken } from './tokenManager'
 
 export default function App () {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [username, setUsername] = useState('')
   const [board, setBoard] = useState(null)
 
-  function logOut () {
+  useEffect(() => {
+    if (getJwtToken()) {
+      setBoard(JSON.parse(sessionStorage.getItem('board')))
+      setUsername(JSON.parse(sessionStorage.getItem('username')))
+      setIsLoggedIn(true)
+    }
+  }, [])
+
+  async function logOut () {
+    removeJwtToken()
+
     setIsLoggedIn(false)
     setUsername('')
     setBoard(null)
+
+    sessionStorage.removeItem('board')
+    sessionStorage.removeItem('username')
   }
 
   if (!isLoggedIn) {
@@ -27,6 +39,9 @@ export default function App () {
       />
     )
   }
+
+  sessionStorage.setItem('board', JSON.stringify(board))
+  sessionStorage.setItem('username', JSON.stringify(username))
 
   return (
     <div>
