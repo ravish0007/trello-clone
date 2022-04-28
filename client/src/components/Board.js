@@ -10,22 +10,29 @@ import TrelloService from '../trelloService'
 export default function Board ({ board }) {
   const [lists, setList] = useState([])
 
-  useEffect(() => {
-    async function fetchData () {
-      const result = await TrelloService.getLists(board.boardID)
+  // useEffect(() => {
+  //   async function fetchData () {
+  //     const result = await TrelloService.getLists(board.boardID)
+  //     setList(result.data.lists.sort((a, b) => (a.list_id - b.list_id)).map(x => {
+  //       return { id: x.list_id.toString(), name: x.name, cards: x.cards }
+  //     }))
+  //   }
+  //   fetchData()
+  // }, [])
 
-      setList(result.data.lists.map(x => {
+  useEffect(() => {
+    TrelloService.getLists(board.boardID).then(result => {
+      setList(result.data.lists.sort((a, b) => (a.list_id - b.list_id)).map(x => {
         return { id: x.list_id.toString(), name: x.name, cards: x.cards }
       }))
-    }
-    fetchData()
+    })
   }, [])
 
   function addList (listname) {
     const list = {
       name: listname
     }
-    TrelloService.newList({ boardID: board.board_id, ...list }).then((id) => {
+    TrelloService.newList({ boardID: board.boardID, ...list }).then((id) => {
       setList((lists) => [...lists, { cards: [], ...list, id: id.toString() }])
     })
   }
