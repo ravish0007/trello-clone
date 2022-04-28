@@ -47,65 +47,89 @@ export default function Login ({ setStatus, setBoard, setUser }) {
     } catch (error) {
       setError(error.toString())
     }
-
-    // setBoard(result.data[0])
-    // setStatus(true)
   }
 
   return (
-    <section className='grid place-items-center h-screen bg-sky-600'>
-      <div className='bg-gray-200 px-6 py-12 h-fit w-4/12 drop-shadow-2xl'>
-        <p className='text-center text-red-900'> {error} </p>
-        <p className='text-center text-green-500'> {success} </p>
-        <h1 className='text-center mb-5 font-black text-lg'>
-          {signUp ? 'Register a new account' : 'Welcome back!'}
-        </h1>
-        <div className='flex justify-center items-center flex-wrap g-6 text-gray-800'>
-          <div className='w-6/12'>
-            <form onSubmit={handleSubmit}>
-              <div className='mb-6'>
-                <input
-                  type='text'
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className='form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-sky-600 focus:outline-none'
-                  placeholder='Email address'
-                />
-              </div>
+    <div className='max-w-screen-xl px-4 py-16 mx-auto mt-20 sm:px-6 lg:px-8'>
+      <div className='max-w-lg mx-auto'>
+        <p className='text-6xl italic font-bold text-center text-sky-600 '>Trello</p>
 
-              <div className='mb-6'>
-                <input
-                  type='password'
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className='form-control block w-full px-4 py-2 text-xl font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded-sm transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-sky-600 focus:outline-none'
-                  placeholder='Password'
-                />
-              </div>
+        <p className='max-w-md mx-auto mt-4 text-center text-gray-500'>Boost your productivity from today!</p>
 
-              <p
-                className='cursor-pointer w-fit underline mb-3 text-gray-600 hover:text-sky-900'
-                onClick={() => {
-                  setError('')
-                  setSuccess('')
-                  setSignUp(x => !x)
-                }}
-              >{signUp ? 'Switch to Login' : 'SignUp Instead'}
-              </p>
+        <form className='p-8 mt-6 mb-0 space-y-4 rounded-lg shadow-2xl' onSubmit={handleSubmit}>
 
-              <button
-                type='submit'
-                className='inline-block px-7 py-3 bg-sky-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-sky-700 hover:shadow-lg focus:bg-sky-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-sky-800 active:shadow-lg transition duration-150 ease-in-out w-full'
-                data-mdb-ripple='true'
-                data-mdb-ripple-color='light'
-              >
-                {signUp ? 'signUp' : 'Login'}
-              </button>
+          <p className='text-center text-red-900'> {error} </p>
+          <p className='text-center text-green-500'> {success} </p>
+          <p className='text-lg font-medium'>
+            {signUp ? 'Register a new account' : 'Sign in to your account'}
+          </p>
 
-            </form>
+          <div>
+            <label htmlFor='email' className='text-sm font-medium'>Email</label>
+
+            <div className='relative mt-1'>
+              <input
+                // change to email
+                type='text'
+                id='email'
+                className='w-full p-4 pr-12 text-sm border border-solid border-gray-200 rounded shadow-sm focus:border-sky-600 focus:outline-none'
+                placeholder='Enter email'
+                autoComplete='off'
+
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+
+            </div>
           </div>
-        </div>
+
+          <div>
+            <label htmlFor='password' className='text-sm font-medium'>Password</label>
+
+            <div className='relative mt-1'>
+              <input
+                type='password'
+                id='password'
+                className='w-full p-4 pr-12 text-sm border border-solid border-gray-200 rounded shadow-sm outline-none focus:border-sky-600'
+                placeholder='Enter password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+
+            </div>
+          </div>
+
+          <button type='submit' className='block w-full px-5 py-3 text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 rounded'>
+            {signUp ? 'Register' : 'Sign in'}
+          </button>
+
+          <p className='text-sm text-center text-gray-500'>
+            {signUp ? 'Already have account?' : 'No account?'}
+            <a
+              className='underline px-2' href=''
+              onClick={(e) => {
+                e.preventDefault()
+                setError('')
+                setSuccess('')
+                setSignUp(x => !x)
+              }}
+            >
+              {signUp ? 'Login' : 'SignUp'}
+
+            </a>
+
+          </p>
+
+          <button className='focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-700 py-3.5 px-4 border rounded border-gray-300 flex items-center w-full mt-10 hover:bg-blue-50 hover:border-blue-200'>
+            <p className='w-full text-base font-medium ml-4 text-gray-700 text-center'>
+
+              <img src='https://hrcdn.net/community-frontend/assets/google-colored-20b8216731.svg' className='inline w-6 h-6 mr-4' alt='google' />
+              Sign in with Google
+            </p>
+          </button>
+        </form>
+
       </div>
-    </section>
+    </div>
   )
 }
