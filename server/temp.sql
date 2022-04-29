@@ -43,3 +43,16 @@ CREATE TABLE cards(
       FOREIGN KEY(list_id) 
 	  REFERENCES lists(list_id)
 );
+
+
+delete from cards;
+delete from lists;
+delete from boards;
+delete from users;
+alter sequence boards_board_id_seq restart ;
+alter sequence cards_position_seq  restart; 
+alter sequence lists_list_id_seq restart;                
+alter sequence users_user_id_seq restart; 
+alter sequence cards_card_id_seq  restart;
+
+
