@@ -1,18 +1,23 @@
 // const axios = require('axios')
 import axios from 'axios'
 
-import { getJwtToken } from './tokenManager'
+axios.defaults.withCredentials = true
 
 const BASE_URL = 'http://localhost:5000/api'
-
-// const tokenizedAxios = axios.create({
-//   baseURL: BASE_URL,
-//   headers: { Authorization: `Bearer ${getJwtToken()}` }
-// })
 
 class TrelloService {
   static async registerUser (user) {
     return await axios.post(`${BASE_URL}/auth/register`, user)
+  }
+
+  static async googleLogin () {
+    const result = await axios.get(`${BASE_URL}/auth/google/redirect`)
+    return result.data
+  }
+
+  static async googleUser () {
+    const result = await axios.post(`${BASE_URL}/auth/google/user`)
+    return result.data
   }
 
   static async logoutUser () {
@@ -22,7 +27,7 @@ class TrelloService {
   static async verifyUser (user) {
     try {
       const result = await axios.post(`${BASE_URL}/auth/login`, user)
-      return result
+      return result.data
     } catch (error) {
       console.log(error)
     }
@@ -30,7 +35,7 @@ class TrelloService {
 
   static async getLists (boardID) {
     try {
-      const response = await axios.get(`${BASE_URL}/lists/${boardID}`, { headers: { Authorization: `Bearer ${getJwtToken()}` } })
+      const response = await axios.get(`${BASE_URL}/lists/${boardID}`)
       return response
     } catch (error) {
       console.log(error)
@@ -39,7 +44,7 @@ class TrelloService {
 
   static async newList (list) {
     try {
-      const response = await axios.post(`${BASE_URL}/lists`, list, { headers: { Authorization: `Bearer ${getJwtToken()}` } })
+      const response = await axios.post(`${BASE_URL}/lists`, list)
       return response.data[0].list_id
     } catch (error) {
       console.log(error)
@@ -47,16 +52,16 @@ class TrelloService {
   }
 
   static updateList (list) {
-    return axios.put(`${BASE_URL}/lists/${list.id}`, { name: list.name }, { headers: { Authorization: `Bearer ${getJwtToken()}` } })
+    return axios.put(`${BASE_URL}/lists/${list.id}`, { name: list.name })
   }
 
   static deleteList (listID) {
-    return axios.delete(`${BASE_URL}/lists/${listID}`, { headers: { Authorization: `Bearer ${getJwtToken()}` } })
+    return axios.delete(`${BASE_URL}/lists/${listID}`)
   }
 
   static async getCards (listID) {
     try {
-      const response = await axios.get(`${BASE_URL}/cards/${listID}`, { headers: { Authorization: `Bearer ${getJwtToken()}` } })
+      const response = await axios.get(`${BASE_URL}/cards/${listID}`)
       return response.data
     } catch (error) {
       console.log(error)
@@ -66,7 +71,7 @@ class TrelloService {
   static async newCard (listID, card) {
     try {
       card.listID = listID
-      const response = await axios.post(`${BASE_URL}/cards`, card, { headers: { Authorization: `Bearer ${getJwtToken()}` } })
+      const response = await axios.post(`${BASE_URL}/cards`, card)
       return response.data[0].card_id
     } catch (error) {
       console.log(error)
@@ -74,11 +79,11 @@ class TrelloService {
   }
 
   static updateCard (card) {
-    return axios.put(`${BASE_URL}/cards/${card.id}`, { ...card }, { headers: { Authorization: `Bearer ${getJwtToken()}` } })
+    return axios.put(`${BASE_URL}/cards/${card.id}`, { ...card })
   }
 
   static deleteCard (cardID) {
-    return axios.delete(`${BASE_URL}/cards/${cardID}`, { headers: { Authorization: `Bearer ${getJwtToken()}` } })
+    return axios.delete(`${BASE_URL}/cards/${cardID}`)
   }
 
   static moveCard (listFromID, listDestinationID, cardFromID, cardDestinationID, sourceIndex, destinationIndex) {
