@@ -2,9 +2,8 @@
 import { useState, useEffect } from 'react'
 
 import trelloService from '../trelloService'
-import { setJwtToken } from '../tokenManager'
 
-export default function Login ({ setStatus, setBoard, setUser }) {
+export default function Login ({ setLoginStatus, setBoard, setUser }) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -33,14 +32,9 @@ export default function Login ({ setStatus, setBoard, setUser }) {
     try {
       const result = await trelloService.verifyUser({ username, password })
       if (result) {
-        setUser(username)
-
-        // setting token in session storage
-        setJwtToken(result.data.token)
-        delete result.data.token
-
-        setBoard(result.data)
-        setStatus(true)
+        setUser(result.user)
+        setBoard(result.board)
+        setLoginStatus(true)
       } else {
         setError('Authentication failed')
       }
@@ -69,13 +63,11 @@ export default function Login ({ setStatus, setBoard, setUser }) {
 
             <div className='relative mt-1'>
               <input
-                // change to email
-                type='text'
+                type='email'
                 id='email'
                 className='w-full p-4 pr-12 text-sm border border-solid border-gray-200 rounded shadow-sm focus:border-sky-600 focus:outline-none'
                 placeholder='Enter email'
                 autoComplete='off'
-
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
@@ -120,9 +112,16 @@ export default function Login ({ setStatus, setBoard, setUser }) {
 
           </p>
 
-          <button className='focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-700 py-3.5 px-4 border rounded border-gray-300 flex items-center w-full mt-10 hover:bg-blue-50 hover:border-blue-200'>
+          <button
+            className='focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-700 py-3.5 px-4 border rounded border-gray-300 flex items-center w-full mt-10 hover:bg-blue-50 hover:border-blue-200 focus:outline-none'
+            onClick={(e) => {
+              e.preventDefault()
+              trelloService.googleLogin().then(x => {
+                window.open(x.redirectURL, '_self')
+              })
+            }}
+          >
             <p className='w-full text-base font-medium ml-4 text-gray-700 text-center'>
-
               <img src='https://hrcdn.net/community-frontend/assets/google-colored-20b8216731.svg' className='inline w-6 h-6 mr-4' alt='google' />
               Sign in with Google
             </p>
