@@ -2,7 +2,7 @@ import { VscChromeClose } from 'react-icons/vsc'
 
 import ListMenuItem from './ListMenuItem'
 
-export default function UserPopover ({ open, closeMenu, logOut, username }) {
+export default function UserPopover ({ open, closeMenu, logOut, user }) {
   if (!open) return null
 
   return (
@@ -21,12 +21,25 @@ export default function UserPopover ({ open, closeMenu, logOut, username }) {
         <div />
       </div>
 
-      <div className='flex flex-row p-2 border-b-0.5 border-slate-300'>
-        <span
-          className='cursor-pointer h-10 w-10 p-2 rounded-full text-red-900 bg-gray-200 text-center text-lg'
-        >{username[0].toUpperCase()}
-        </span>
-        <span className='py-2 px-6 text-slate-700'> {username} </span>
+      {/* <div className='flex flex-row p-2 border-b-0.5 border-slate-300'> */}
+      <div className='p-2 border-b-0.5 border-slate-300'>
+
+        {user.picture
+
+          ? <img
+              className='h-14 w-14 rounded-full mx-auto'
+              src={user.picture}
+            />
+
+          : <p
+              className='mx-auto cursor-pointer h-10 w-10 p-2 rounded-full text-red-900 bg-gray-200 text-center text-lg'
+            >
+            {user.name[0].toUpperCase()}
+          </p>}
+
+        <p className='text-center py-2 px-6 text-slate-700'>
+          {user.name}
+        </p>
       </div>
 
       <div className='m-0 space-y-1 py-2'>
