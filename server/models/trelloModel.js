@@ -12,7 +12,7 @@ async function insertUser (user) {
 
     const newBoard = await pool.query('INSERT INTO boards (user_id, board_name, status) values ($1, $2, 1) RETURNING board_id', [result.rows[0].user_id, 'temp'])
 
-    return [null, [{ ...result.rows[0], ...newBoard.rows[0] }]]
+    return [null, [{ user_id: result.rows[0].user_id, board_id: newBoard.rows[0].board_id }]]
   } catch (error) {
     return [error, null]
   }
