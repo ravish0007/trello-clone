@@ -2,15 +2,15 @@
 const jwt = require('jsonwebtoken')
 
 async function verifyToken (req, res, next) {
-  const token = req.headers?.authorization.split(' ')[1]
+  const token = req.session.token
 
   if (!token || !Object.entries(token).length) {
-    return res.status(401).send('Access denied')
+    return res.clearCookie('googleOauth').redirect(process.env.UI_ROOT)
   }
 
   try {
     const verifiedToken = await jwt.verify(token, process.env.JWT_SECRET)
-    res.locals.user = verifiedToken
+    res.locals.user = verifiedToken.payload
     next()
   } catch (error) {
     console.error(error)
