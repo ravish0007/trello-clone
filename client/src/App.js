@@ -12,16 +12,16 @@ export default function App () {
   const [user, setUser] = useState('')
   const [board, setBoard] = useState(null)
 
-  // useEffect(() => {
-  //   if (getJwtToken()) {
-  //     setBoard(JSON.parse(sessionStorage.getItem('board')))
-  //     setUsername(JSON.parse(sessionStorage.getItem('username')))
-  //     setIsLoggedIn(true)
-  //   }
-  // }, [])
+  useEffect(() => {
+    if (document.cookie.includes('tokenExists')) {
+      setUser(JSON.parse(sessionStorage.getItem('user')))
+      setBoard(JSON.parse(sessionStorage.getItem('board')))
+      setIsLoggedIn(true)
+    }
+  }, [])
 
   useEffect(() => {
-    if (document.cookie.includes('googleOauth')) {
+    if (document.cookie.includes('googleOauth') && !document.cookie.includes('tokenExists')) {
       TrelloService.googleUser().then(data => {
         setUser(data.user)
         setBoard(data.board)
@@ -36,9 +36,8 @@ export default function App () {
       setUser('')
       setBoard(null)
     })
-
-    // sessionStorage.removeItem('board')
-    // sessionStorage.removeItem('username')
+    sessionStorage.removeItem('board')
+    sessionStorage.removeItem('user')
   }
 
   if (!isLoggedIn) {
@@ -51,8 +50,8 @@ export default function App () {
     )
   }
 
-  // sessionStorage.setItem('board', JSON.stringify(board))
-  // sessionStorage.setItem('username', JSON.stringify(username))
+  sessionStorage.setItem('board', JSON.stringify(board))
+  sessionStorage.setItem('user', JSON.stringify(user))
 
   return (
     <div>
