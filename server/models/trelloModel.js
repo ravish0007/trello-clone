@@ -4,8 +4,6 @@ const config = require('../config')
 
 const pool = new Pool(config.db)
 
-// all boards
-
 async function insertUser (user) {
   try {
     const result = await pool.query('INSERT INTO users (username, password) values ($1, $2) RETURNING user_id', [user.name, user.passwordHash])
@@ -91,7 +89,16 @@ async function deleteList (listID) {
 
 async function fetchAllCards (listID) {
   try {
-    const result = await pool.query('SELECT card_id as id, name, description FROM cards where list_id=$1 and status=1', [listID])
+    const result = await pool.query('SELECT card_id as id, name, description, position FROM cards where list_id=$1 and status=1', [listID])
+    return [null, result.rows]
+  } catch (error) {
+    return [error, null]
+  }
+}
+
+async function fetchCard (cardID) {
+  try {
+    const result = await pool.query('SELECT * FROM cards where card_id=$1', [cardID])
     return [null, result.rows]
   } catch (error) {
     return [error, null]
@@ -158,7 +165,6 @@ async function deleteCard (cardID) {
     let result = await pool.query(query, [cardID])
     result = await pool.query(decrementPosition, [cardResult.rows[0].list_id, cardResult.rows[0].position])
     result = await pool.query(updateCounter, [cardResult.rows[0].list_id])
-
     return [null, result.rows]
   } catch (error) {
     return [error, null]
@@ -166,33 +172,25 @@ async function deleteCard (cardID) {
 }
 
 async function moveCard (payload) {
-  console.log(payload)
+  try {
+  // remove card
+    await deleteCard(payload.cardFromID)
+    const [error, result] = await fetchCard(payload.cardFromID)
 
-  if (payload.listFromID === payload.listDestinationID) {
-    if (payload.sourceIndex > payload.destinationIndex) {
-      // replace with index
-      console.log('here')
+    // insertion, replication
 
-      console.log(payload)
+    // a) update counter to +1 in list
+    await pool.query('UPDATE lists SET counter = counter + 1 WHERE list_id = $1', [payload.listDestinationID])
 
-      const sourcePositionResult = await pool.query('SELECT position FROM cards WHERE card_id = $1', [payload.cardDestinationID])
-      const destinationPositionResult = await pool.query('SELECT position FROM cards WHERE card_id = $1', [payload.cardFromID])
+    // b) increment all below items from destinationIndex in destinationList
+    await pool.query('UPDATE cards SET position = position + 1 WHERE list_id = $1 and status = 1', [payload.listDestinationID])
 
-      // console.log(sourcePositionResult.rows, destinationPositionResult.rows)
+    // c) insert card into that list by updating its list_id and position and making it active
+    await pool.query('UPDATE cards SET list_id = $2, position = $3, status = 1 WHERE card_id = $1', [payload.cardFromID, payload.listDestinationID, payload.destinationIndex])
 
-      const sourcePosition = sourcePositionResult.rows[0].position
-      const destinationPosition = destinationPositionResult.rows[0].position
-
-      const incrementPosition = await pool.query('UPDATE cards set position = position + 1 where position >= $1 and position < $2', [sourcePosition, destinationPosition])
-      const assignPosition = await pool.query('UPDATE cards set position = $1 where card_id = $2', [sourcePosition, cardDestinationID])
-    }
-
-    // const sourcePositionQuery = 'SELECT position FROM cards WHERE card_id = $1'
-    // const destinationIndexQuery = 'SELECT position FROM cards WHERE card_id = $1'
-
-    // await pool.query(destinationIndexQuery, [payload.cardDestinationID])
-
-    // const lowerPositionQuery = 'UPDATE cards set position = position + 1 where position > '
+    return [null, true]
+  } catch (error) {
+    return [error, false]
   }
 }
 
