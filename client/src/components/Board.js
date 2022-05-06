@@ -10,16 +10,6 @@ import TrelloService from '../trelloService'
 export default function Board ({ board }) {
   const [lists, setList] = useState([])
 
-  // useEffect(() => {
-  //   async function fetchData () {
-  //     const result = await TrelloService.getLists(board.boardID)
-  //     setList(result.data.lists.sort((a, b) => (a.list_id - b.list_id)).map(x => {
-  //       return { id: x.list_id.toString(), name: x.name, cards: x.cards }
-  //     }))
-  //   }
-  //   fetchData()
-  // }, [])
-
   useEffect(() => {
     TrelloService.getLists(board.boardID).then(result => {
       setList(result.data.lists.sort((a, b) => (a.list_id - b.list_id)).map(x => {
@@ -40,16 +30,14 @@ export default function Board ({ board }) {
   function handleDragEnd (result) {
     const { source, destination } = result
 
-    console.log(result)
     if (!destination) return
 
     const sourceCard_ = lists.filter(list => list.id === source.droppableId)[0].cards[source.index]
     const destinationCard = lists.filter(list => list.id === destination.droppableId)[0].cards[destination.index]
 
-    // TrelloService.moveCard(source.droppableId, destination.droppableId, sourceCard_.id, destinationCard?.id, source.index, destination.index).then(() => {})
-
     if (sourceCard_.id === destinationCard?.id) return
 
+    TrelloService.moveCard(source.droppableId, destination.droppableId, sourceCard_.id, destinationCard?.id, source.index, destination.index).then(() => {})
     const [sourceCard] = lists.filter(list => list.id === source.droppableId)[0].cards.splice(source.index, 1)
 
     setList(lists => {
@@ -68,7 +56,6 @@ export default function Board ({ board }) {
         : { ...list, cards: destinationCards }
       )
     })
-
     // })
   }
 
