@@ -9,7 +9,9 @@ async function fetchAllLists (request, response) {
 
   for (let i = 0; i < result.length; i++) {
     const [error, cards] = await db.fetchAllCards(result[i].list_id)
-    result[i].cards = cards.map(x => { return { ...x, id: x.id.toString(), description: x.description ? x.description : '' } })
+    result[i].cards = cards.sort((a, b) => (a.position - b.position)).map(x => {
+      return { ...x, id: x.id.toString(), description: x.description ? x.description : '' }
+    })
   }
 
   if (error) {
