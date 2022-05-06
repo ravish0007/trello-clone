@@ -50,14 +50,19 @@ async function handleLogin (req, res) {
       userID: user.user_id
     }, process.env.JWT_SECRET, { expiresIn: '1h' })
 
-    res.send({
+    const data = {
       board: { boardID: result[0].board_id },
       user: {
         email: user.username,
         picture: null,
         name: user.username.split('@')[0]
       }
-    })
+    }
+
+    res.cookie('tokenExists', 'true', {
+      expires: new Date(new Date().getTime() + 100 * 1000),
+      httpOnly: false
+    }).send(data)
   } else {
     res.sendStatus(401)
   }
@@ -76,15 +81,6 @@ async function GoogleOauthCallback (req, res) {
   const code = req.query.code
 
   const user = await googleOauth.getUser(code)
-
-  // {"id":"116204350791824442338",
-  // "email":"ravish.nfs@gmail.com",
-  // "verified_email":true,
-  // "name":"ravish shankar",
-  // "given_name":"ravish",
-  // "family_name":"shankar",
-  // "picture":"https://lh3.googleusercontent.com/a-/AOh14Gjflq8zL3zNojorew4IVXZNo6WIkPxOwbhkIeVB=s96-c",
-  // "locale":"en"}
 
   // check for duplicate username in the db
   const [error, duplicate] = await db.getPassword(user.email)
@@ -127,7 +123,10 @@ async function GoogleOauthCallback (req, res) {
 }
 
 async function GoogleUserProvider (req, res) {
-  res.send(res.locals.user)
+  res.cookie('tokenExists', 'true', {
+    expires: new Date(new Date().getTime() + 100 * 1000),
+    httpOnly: false
+  }).send(res.locals.user)
 }
 
 module.exports = {
